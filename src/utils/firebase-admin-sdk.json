@@ -1,0 +1,13 @@
+{
+    "type": "service_account",
+    "project_id": "mawal-fragrances",
+    "private_key_id": "6d6279ab29ff0d7aed4383b0b3858564e262fcc9",
+    "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQDrMVssSiZKbzmc\nsfBXeQlQ1qdZ+tBp9ysN0UOPnTc3qgAfGN7/kZpaiAv/es7mSQJUkUJus9CfrT5G\n92U1p8MNlG9Ek8hF47QYpS9OY97plH3vbw0V8vyu3iT8j0E7OzICqZjY4F2/uVYp\nh62C0tgXL1/u1qy3Ut04RiKAX8gskkFW9IWPNJRrLgmpmFm6ZObwiKwC5e1nnY2f\nsZ0RR5flV3e3cFp4y2JVWfWxdbH1ymn9l+idRHi5mFN8+ROVMbUtdDHt/1Sqdcz4\nxmR4kdG+9h+AYbEMawrWgjQ/w6pdojwLIvqXniZeWunyljzQoi0TWGwwPquiUR5i\n65n80pqLAgMBAAECggEACuyL846uIJ7x6hlJtIZmrF6L/13q+EEGuumRXcZLnkZD\nIy6gjPZSWQogpIkruv6BITRuBX5Mnl4Jmno7NTbJlIPkdyb2Emj1IH/rppR08hx3\njPt3fCGBIw4mYaS1vu6M8Bq4grpJIHKXUe5/XKg2aT1GE23dL9ald8uqJpRMU+WQ\nXaP7SSVA+vhUL0BPFIwa2dSBuw+Lq1vd3QcJ0mv9RNGjaCITiHfpQyp5R4jeAnbz\nNypfVOBXl/gq3YhreogdAOp2bmnu/5h2q/nJbVa9u2vPdJgpHzSRF4vfTOqArPgd\n6+2fF9HD6OerA+p9lqjiIKNwzyZhrxx9g6oi/mcgoQKBgQD8e3GUYvVRQRIUjOAb\n3crN9F3DfW7A8xRqmtZJUaJn/dhfK7YJgEozlMEPgqLPHVnuksJiCkypi1xISbw6\n5+FyRwaQhh2QzZ2y3y3gRB2FEaDbJJBuAb9DO12TkmyLY8Hk8Tm8pSul8kEcM4wj\n2RimRmOqawT8FlTHGP7U/JTLJwKBgQDueD6TOPwj3EpzojqRjZ3ZPifq6ZrwVPQC\nUCJneS95K+Ch+/XjFyno294o9R5yNTR2MYM79OM/2SVEPrxBuMkRXOLAngLzKpkB\nK2LpMsIV/58Icg1VQrUshC/TaDoOiXPGyDRXZGodS9eKKjlnQFP5DGdY7qunrx/y\nWxxQj7Sj/QKBgBYWImBtq7IY9CDyFeS6KTSNDOq9/UNJwF52/wnY51EbhqMEqt73\n5wXOHHlj3yQpGCXjlreG2R/3vfHg6WNpx3H8vplD8jApnIL6PQQiUUbDvQOOlkfZ\nRUb3WX9ATth+uIZzh6518HSK1aFG7RpxslNRUwSkagI3XeEw0ZIGKmn/AoGBAOnk\naEOP1cX6b8+go19VjiegThibDUuBl16ZaFUiyExJm+ZksVQNyR5KYEi9uiH8SztN\n7tCkrStXeLTJ721qp1NvTjvr/yqvcihyfG4LSc+3yyzGaItihT5nXF020hKmADdM\n8AFzTJz1YS9zoJ/DuVkBMHBKj3RFUMktUcU2Xc+lAoGBANlpFPgvQYAHde2ilmmB\nO3JTfzLWRaKDDVbgRlgB6fGx7D8QCOomYkD9nnvBME9/0ELwZdh0TEN4vKF66rT6\nomDUALcwNs1NR5boe2FxMlmJDzMlDbXJxU9vHo/I+FU9I0kxUxlvZ0WlG0lGeCKg\nfNW1xNb7+5QxWBeKrZ83PDx1\n-----END PRIVATE KEY-----\n",
+    "client_email": "firebase-adminsdk-fbsvc@mawal-fragrances.iam.gserviceaccount.com",
+    "client_id": "104926653646759105922",
+    "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+    "token_uri": "https://oauth2.googleapis.com/token",
+    "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+    "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/firebase-adminsdk-fbsvc%40mawal-fragrances.iam.gserviceaccount.com",
+    "universe_domain": "googleapis.com"
+}
