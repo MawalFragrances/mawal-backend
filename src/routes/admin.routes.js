@@ -28,6 +28,8 @@ import {
     deleteCoupon,
     updateShippingSettings,
     addNewProduct,
+    updateHeroImages,
+    updateSocialLinks,
 } from "../controllers/admin.controllers.js";
 import { authenticateAdmin } from "../middlewares/authenticateAdmin.js";
 import { upload } from "../middlewares/multer.js";
@@ -63,7 +65,8 @@ router.patch("/update-promo-messages", authenticateAdmin, updatePromoMessages);
 router.patch("/restore-product/:productId", authenticateAdmin, restoreProduct);
 router.patch("/update-review-status/:id", authenticateAdmin, updateReviewStatus);
 router.patch("/change-shipping-settings", authenticateAdmin, updateShippingSettings);
-
+router.patch("/update-hero-images", authenticateAdmin, upload.array("image", 10), updateHeroImages);
+router.patch("/update-social-links", authenticateAdmin, updateSocialLinks);
 // DELETE REQUESTS
 router.delete("/delete-coupon", authenticateAdmin, deleteCoupon);
 router.delete("/delete-admin/:adminId", authenticateAdmin, deleteAdmin);

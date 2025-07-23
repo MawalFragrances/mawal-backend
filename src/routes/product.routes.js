@@ -1,7 +1,5 @@
 import express from "express";
 import {
-    // addNewProduct,
-    // deleteProductById,
     getAllProducts,
     getSearchedProducts,
     getProductToViewDetails,
@@ -23,8 +21,6 @@ const router = express.Router();
 router.get("/get-all-products", getAllProducts);
 router.get("/get-searched-products", getSearchedProducts);
 router.get("/get-product-to-view-details/:id", getProductToViewDetails);
-
-// router.post("/add-new-product", upload.array("image", 5), addNewProduct);
 
 router.patch("/update-product-name/:id", authenticateAdmin, updateProductName);
 router.patch("/update-product-stock/:id", authenticateAdmin, updateProductStock);

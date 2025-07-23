@@ -48,6 +48,19 @@ const storeSchema = new mongoose.Schema({
         type: Number,
         default: 0
     },
+    heroImages: {
+        type: [String],
+        default: []
+    },
+    socialLinks: {
+        type: Object,
+        default: {
+            whatsapp: "",
+            facebook: "",
+            insta: "",
+            twitter: "",
+        }
+    },
 }, { timestamps: true });
 
 

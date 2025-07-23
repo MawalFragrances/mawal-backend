@@ -108,127 +108,6 @@ export const getSearchedProducts = async (req, res) => {
     }
 }
 
-// // GET PRODUCT REVIEWS
-// export const getProductReviews = (req, res) => {
-//     const { productId } = req.params;
-//     const page = parseInt(req.query.page) || 1;
-//     const limit = parseInt(req.query.limit) || 15;
-//     const skipIndex = (page - 1) * limit;
-
-//     if (!productId) return sendRes(res, 400, "Product Id is Required.");
-
-//     return Promise.all([
-//         Review.countDocuments({ productId }),
-//         Review.aggregate([
-//             { $match: { productId: new mongoose.Types.ObjectId(productId) } },
-//             {
-//                 $group: {
-//                     _id: null,
-//                     averageRating: { $avg: '$rating' }
-//                 }
-//             }
-//         ]),
-//         Review.find({ productId })
-//             .sort({ createdAt: -1 })
-//             .skip(skipIndex)
-//             .limit(limit)
-//             .select('-email -__v')
-//     ])
-//         .then(([totalReviews, averageRatingResult, reviews]) => {
-//             const averageRating = averageRatingResult.length > 0
-//                 ? averageRatingResult[0].averageRating.toFixed(1)
-//                 : 0;
-
-//             const totalPages = Math.ceil(totalReviews / limit);
-
-//             return sendRes(res, 200, "", {
-//                 totalReviews,
-//                 averageRating: parseFloat(averageRating),
-//                 reviews,
-//                 pagination: {
-//                     currentPage: page,
-//                     totalPages,
-//                     pageSize: limit,
-//                     totalItems: totalReviews
-//                 }
-//             });
-//         })
-//         .catch(error => {
-//             consoleError("getProductReviews (product.controllers)", error);
-//             return sendRes(res, 500, "Something went wrong on our side. Please! try again.");
-//         });
-// };
-
-// export const getProductById = async (req, res) => {
-//     try {
-//         const { id: productId } = req.params;
-
-//         const product = await Product.findById(productId);
-
-//         if (!product) return sendRes(res, 400, "Product Not Found");
-
-//         return sendRes(res, 200, "Product Fetched", product);
-//     }
-//     catch (error) {
-//         consoleError("getProductById (product.controllers)", error);
-//         return sendRes(res, 500, "Something went wrong on our side. Please! try again.");
-//     }
-// }
-
-// /* -------------------- POST REQUESTS -------------------- */
-// // ADD A NEW PRODUCT
-// export const addNewProduct = async (req, res) => {
-//     try {
-//         const { name, price, stock, discount, usage, ingredients, category } = req.body;
-
-//         let images;
-
-//         if (req.files && req.files.length > 0) {
-//             const imageUploadPromises = req.files.map(file =>
-//                 cloudinary.uploader.upload(file.path)
-//             );
-
-//             const uploadedImages = await Promise.all(imageUploadPromises);
-
-//             images = uploadedImages.map(img => img.secure_url);
-
-//             req.files.forEach(file => fs.unlinkSync(file.path));
-//         }
-
-//         const discountedPrice = discount ? price - (price * discount / 100) : price;
-
-//         const newProduct = await Product.create({
-//             name, price, stock, discount, usage, ingredients, category, images, discountedPrice
-//         })
-
-//         return sendRes(res, 200, "New Product Added Successfully.", newProduct);
-//     }
-//     catch (error) {
-//         console.log(error);
-//         consoleError("addNewProduct (product.controllers)", error);
-//         return sendRes(res, 500, "Something went wrong on our side. Please! try again later.")
-//     }
-// }
-
-// export const deleteProductById = async (req, res) => {
-//     try {
-//         const { id: productId } = req.params;
-//         if (!productId) return sendRes(res, 422, "Product Id is required.");
-
-//         const updatedProduct = await Product.findByIdAndUpdate(
-//             productId,
-//             { isProductDeleted: true },
-//         );
-//         if (!updatedProduct) return sendRes(res, 404, "Product not found.");
-
-//         return sendRes(res, 200, "Product Deleted successfully.");
-//     }
-//     catch (error) {
-//         consoleError("deleteProductById (product.controllers)", error);
-//         return sendRes(res, 500, " Something went wrong on our side. Please! Try again later.")
-//     }
-// }
-
 export const updateProductName = async (req, res) => {
     try {
         const { id: productId } = req.params;
@@ -449,7 +328,7 @@ export const updateProductImages = async (req, res) => {
         if (!updatedProduct) return sendRes(res, 404, "Product not found.");
         return sendRes(res, 200, "Product images updated successfully.", updatedProduct);
     } catch (error) {
-        consoleError("updateProductImages (admin.controllers.js)", error);
+        consoleError("updateProductImages (product.controllers.js)", error);
 
         if (req.files && req.files.length > 0) {
             req.files.forEach(file => {
@@ -460,4 +339,3 @@ export const updateProductImages = async (req, res) => {
         return sendRes(res, 500, "Something went wrong. Please try again.");
     }
 };
-

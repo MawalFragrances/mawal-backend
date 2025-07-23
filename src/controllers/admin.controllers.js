@@ -6,6 +6,7 @@ import { Store } from "../models/store.model.js";
 import { generateTimeFrameQuery, consoleError, sendRes } from "../utils/comman.utils.js";
 import fs from "fs";
 import cloudinary from "../utils/cloudinary.js";
+import mongoose from "mongoose";
 
 const storeId = process.env.STORE_ID;
 
@@ -193,7 +194,7 @@ export const getOrdersData = async (req, res) => {
             Order.countDocuments({ status: "PENDING" }),
             Order.countDocuments({ $or: [{ status: "SHIPPED" }, { status: "DELIVERED" }] }),
 
-            Order.find({}).sort({ createdAt: -1 }).limit(15),
+            Order.find({}).sort({ createdAt: -1 }).limit(15).populate("products.productId"),
         ]);
 
         return sendRes(res, 200, "Orders data fetched successfully", {
@@ -382,7 +383,8 @@ const getLastYearSales = async () => {
         const salesData = await Order.aggregate([
             {
                 $match: {
-                    createdAt: { $gte: lastYear }
+                    createdAt: { $gte: lastYear },
+                    status: { $in: ["SHIPPED", "DELIVERED"] }
                 }
             },
             {
@@ -401,6 +403,7 @@ const getLastYearSales = async () => {
                 }
             }
         ]);
+
 
         const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
         const result = [];
@@ -435,7 +438,7 @@ export const getAnalyticsData = async (req, res) => {
                 { $count: "totalCustomers" }
             ]),
             Order.aggregate([
-                { $match: { status: "SHIPPED" } },
+                { $match: { status: { $in: ["SHIPPED", "DELIVERED"] } } },
                 { $group: { _id: null, totalRevenue: { $sum: "$orderTotal" } } }
             ]),
             getLastYearSales(),
@@ -458,8 +461,11 @@ export const getTotalOrders = async (req, res) => {
 
         const query = generateTimeFrameQuery(timeFrame, customStartDate, customEndDate);
 
-        const totalOrders = await Order.countDocuments(query);
+        const totalOrders = await Order.countDocuments({
+            ...query
+        });
 
+        if (totalOrders === 0) return sendRes(res, 200, "Dashboard data fetched successfully", 0);
         return sendRes(res, 200, "Dashboard data fetched successfully", totalOrders);
 
     } catch (error) {
@@ -495,7 +501,7 @@ export const getTotalSales = async (req, res) => {
         const query = generateTimeFrameQuery(timeFrame, customStartDate, customEndDate);
 
         const response = await Order.aggregate([
-            { $match: query },
+            { $match: { ...query, status: { $in: ["SHIPPED", "DELIVERED"] } } },
             {
                 $group: {
                     _id: null,
@@ -548,6 +554,11 @@ export const addNewAdmin = async (req, res) => {
 export const deleteAdmin = async (req, res) => {
     try {
         const { adminId } = req.params;
+        const { email } = req.query;
+
+        const MAIN_ADMIN_EMAIL = "fragrances.mawal@gmail.com";
+        if (email === MAIN_ADMIN_EMAIL) return sendRes(res, 400, "You cannot delete the main admin");
+
         if (!adminId) return sendRes(res, 400, "Admin ID is required");
 
         const deletedAdmin = await Admin.findByIdAndDelete(adminId);
@@ -630,6 +641,69 @@ export const updateShippingSettings = async (req, res) => {
     }
     catch (error) {
         consoleError("updateShippingSettings (admin.controllers.js)", error);
+        return sendRes(res, 500, "Something went wrong on our side. Please! try again.");
+    }
+}
+export const updateHeroImages = async (req, res) => {
+    try {
+
+        let images = [];
+
+        let existingImages = req.body.existingImages || [];
+        let newImages = req.files || [];
+
+        if (typeof existingImages === "string") {
+            existingImages = [existingImages];
+        }
+
+        images = [...existingImages];
+
+        if (newImages && newImages.length > 0) {
+            const uploadPromises = newImages.map(file => cloudinary.uploader.upload(file.path));
+            const uploaded = await Promise.all(uploadPromises);
+            const uploadedUrls = uploaded.map(img => img.secure_url);
+            images.push(...uploadedUrls);
+
+            newImages.forEach(file => {
+                if (fs.existsSync(file.path)) fs.unlinkSync(file.path);
+            });
+        }
+
+        const updatedStore = await Store.findByIdAndUpdate(
+            new mongoose.Types.ObjectId(storeId),
+            { $set: { heroImages: images } },
+            { new: true }
+        );
+
+        if (!updatedStore) return sendRes(res, 404, "Store not found.");
+        return sendRes(res, 200, "Hero images updated successfully.", updatedStore.heroImages);
+    }
+    catch (error) {
+        consoleError("updateHeroImages (admin.controllers.js)", error);
+
+        if (req.files && req.files.length > 0) {
+            req.files.forEach(file => {
+                if (fs.existsSync(file.path)) fs.unlinkSync(file.path);
+            });
+        }
+
+        return sendRes(res, 500, "Something went wrong. Please try again.");
+    }
+};
+export const updateSocialLinks = async (req, res) => {
+    try {
+        let { socialLinks } = req.body;
+        if (!socialLinks) return sendRes(res, 400, "Social links are required");
+
+        socialLinks = JSON.parse(socialLinks);
+
+        const updatedStore = await Store.findByIdAndUpdate(storeId, { socialLinks }, { new: true });
+        if (!updatedStore) return sendRes(res, 404, "Store not found");
+
+        return sendRes(res, 200, "Social links updated successfully", updatedStore.socialLinks);
+    }
+    catch (error) {
+        consoleError("updateSocialLinks (admin.controllers.js)", error);
         return sendRes(res, 500, "Something went wrong on our side. Please! try again.");
     }
 }
