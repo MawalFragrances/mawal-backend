@@ -8,6 +8,8 @@ import connectDatabase from "./db/db.js";
 
 const app = express();
 
+app.set('trust proxy', 1);
+
 app.use(express.json());
 app.use(cookieParser());
 app.use(cors({ origin: [process.env.FRONTEND_URL, "https://mawal-admin.vercel.app", "http://localhost:5173", "http://localhost:5174", "http://192.168.18.15:5173"], credentials: true }))
