@@ -51,7 +51,9 @@ export const verifyOtp = async (req, res) => {
 
         if (admin.otp !== otp) return sendRes(res, 400, "Invalid OTP!");
 
-        generateTokenAndSetCookie(res, admin._id);
+        const token = generateTokenAndSetCookie(res, admin._id);
+        if (!token) return sendRes(res, 500, "Something went wrong on our side. Please! try again.");
+
         return sendRes(res, 200, "Login Successfull.", admin);
     }
     catch (error) {

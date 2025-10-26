@@ -646,43 +646,47 @@ export const updateShippingSettings = async (req, res) => {
 }
 export const updateHeroImages = async (req, res) => {
     try {
+        let existingImages = [];
 
-        let images = [];
-
-        let existingImages = req.body.existingImages || [];
-        let newImages = req.files || [];
-
-        if (typeof existingImages === "string") {
-            existingImages = [existingImages];
+        if (req.body.existingImages) {
+            existingImages = JSON.parse(req.body.existingImages);
         }
 
-        images = [...existingImages];
+        const newImages = req.files || [];
+        let uploadedUrls = [];
 
-        if (newImages && newImages.length > 0) {
-            const uploadPromises = newImages.map(file => cloudinary.uploader.upload(file.path));
+        // Upload new images to Cloudinary
+        if (newImages.length > 0) {
+            const uploadPromises = newImages.map((file) =>
+                cloudinary.uploader.upload(file.path)
+            );
             const uploaded = await Promise.all(uploadPromises);
-            const uploadedUrls = uploaded.map(img => img.secure_url);
-            images.push(...uploadedUrls);
-
-            newImages.forEach(file => {
-                if (fs.existsSync(file.path)) fs.unlinkSync(file.path);
-            });
+            uploadedUrls = uploaded.map((img) => img.secure_url);
         }
 
+        // Merge existing + new URLs
+        const allImages = [...existingImages, ...uploadedUrls];
+
+        // Update store record
         const updatedStore = await Store.findByIdAndUpdate(
             new mongoose.Types.ObjectId(storeId),
-            { $set: { heroImages: images } },
+            { $set: { heroImages: allImages } },
             { new: true }
         );
 
+        // Cleanup temp files
+        newImages.forEach((file) => {
+            if (fs.existsSync(file.path)) fs.unlinkSync(file.path);
+        });
+
         if (!updatedStore) return sendRes(res, 404, "Store not found.");
+
         return sendRes(res, 200, "Hero images updated successfully.", updatedStore.heroImages);
-    }
-    catch (error) {
+    } catch (error) {
         consoleError("updateHeroImages (admin.controllers.js)", error);
 
         if (req.files && req.files.length > 0) {
-            req.files.forEach(file => {
+            req.files.forEach((file) => {
                 if (fs.existsSync(file.path)) fs.unlinkSync(file.path);
             });
         }
